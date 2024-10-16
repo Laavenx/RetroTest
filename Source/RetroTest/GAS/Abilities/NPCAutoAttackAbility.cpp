@@ -23,14 +23,12 @@ void UNPCAutoAttackAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
-
-	// Get npc actor and disable behaviour tree for the duration of montage
+	
 	AvatarActor = Cast<ARetroTestNPC>(GetAvatarActorFromActorInfo());
 	if (!IsValid(AvatarActor))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);	
 	}
-	AvatarActor->SetBlackBoardShouldExecute(false);
 
 	DevSettings = GetDefault<URetroTestSettings>();
 	
@@ -81,11 +79,6 @@ void UNPCAutoAttackAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	if (IsValid(AvatarActor))
-	{
-		AvatarActor->SetBlackBoardShouldExecute(true);	
-	}
 }
 
 void UNPCAutoAttackAbility::SweepForTargets() const

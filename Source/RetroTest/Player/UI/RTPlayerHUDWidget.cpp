@@ -46,6 +46,7 @@ void URTPlayerHUDWidget::OnGameplayEffectAdded(UAbilitySystemComponent* ASC, con
 	CooldownMeter->SetText(FText::FromString(Text));
 	if (TimeRemaining > 0.0f)
 	{
+		// Initiates timer which will decrease the cooldown number by 0.1
 		FTimerDelegate Delegate;
 		Delegate.BindLambda([=, this]() mutable
 			{
@@ -64,15 +65,15 @@ void URTPlayerHUDWidget::OnGameplayEffectAdded(UAbilitySystemComponent* ASC, con
 	}
 }
 
+void URTPlayerHUDWidget::HealthChanged(const FOnAttributeChangeData& Data)
+{
+	// Update health bar
+	SetCurrentHealth(Data.NewValue);
+}
+
 void URTPlayerHUDWidget::OnGameplayTagChanged(FGameplayTag InCooldownTag, int32 Count)
 {
 	if (InCooldownTag == FGameplayTag::RequestGameplayTag(FName(TEXT("Ability.SmashCooldown"))))
 	{
 	}
-}
-
-void URTPlayerHUDWidget::HealthChanged(const FOnAttributeChangeData& Data)
-{
-	// Update health bar
-	SetCurrentHealth(Data.NewValue);
 }

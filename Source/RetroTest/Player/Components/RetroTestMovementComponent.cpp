@@ -17,6 +17,11 @@ URetroTestMovementComponent::URetroTestMovementComponent()
 	bUseFlatBaseForFloorChecks = true;
 }
 
+void URetroTestMovementComponent::Server_ChangeGravity_Implementation(float NewGravity)
+{
+	GravityScale = NewGravity;
+}
+
 void URetroTestMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,10 +59,6 @@ void URetroTestMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	
 	bool bIsBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceOutHit, CapsuleLocation - FVector(0,0,26.75), LineTracedDestination,
 		ObjectsToHit, CollisionParameters);
-
-	//DrawDebugSphere(GetWorld(), CapsuleLocation, 50.f, 16, FColor::Red, false, -1, 0, 1.f);
-	// DrawDebugLine(GetWorld(), CapsuleLocation - FVector(0,0,26.75), LineTracedDestination, FColor::Red,
-	// 	false, -1, 0, 1.f);
 	
 	if (bIsBlockingHit)
 	{
@@ -76,9 +77,9 @@ void URetroTestMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	}
 	
 	// fixes being pushed by other objects
-	FHitResult OutHit;
-	SafeMoveUpdatedComponent(FVector(0.f, 0.f, 0.01f), CharacterOwner->GetActorRotation(), true, OutHit);
-	SafeMoveUpdatedComponent(FVector(0.f, 0.f, -0.01f), CharacterOwner->GetActorRotation(), true, OutHit);
+	// FHitResult OutHit;
+	// SafeMoveUpdatedComponent(FVector(0.f, 0.f, 0.01f), CharacterOwner->GetActorRotation(), true, OutHit);
+	// SafeMoveUpdatedComponent(FVector(0.f, 0.f, -0.01f), CharacterOwner->GetActorRotation(), true, OutHit);
 
 	PrevCapsuleLocation = UpdatedComponent->GetComponentLocation();
 }
@@ -106,7 +107,7 @@ void URetroTestMovementComponent::OnMovementModeChanged(EMovementMode PreviousMo
 	if (MovementMode == MOVE_Walking)
 	{
 		MaxWalkSpeed = WalkingWalkSpeed;
-		GravityScale = WalkingGravityScale;
+		Server_ChangeGravity(WalkingGravityScale);
 		RotationRate = WalkingRotationRate;
 		JumpDeltaTime = 0.0f;
 
@@ -142,7 +143,7 @@ bool URetroTestMovementComponent::DoJump(bool bReplayingMoves)
 		bIsJumping = true;
 		bIsFalling = false;
 		
-		GravityScale = 2;
+		Server_ChangeGravity(2);
 		
 		// Increase forward jump length
 		const auto ForwardVector = FVector(Velocity.X, Velocity.Y, 0.0) * JumpForwardVelocityImpulseMult;
@@ -165,7 +166,7 @@ void URetroTestMovementComponent::ProcessCustomJump(const float DeltaTime)
 		JumpDeltaTime += DeltaTime;
 		const float JumpCurveValue = JumpCurve->GetFloatValue(JumpDeltaTime);
 
-		GravityScale = JumpCurveValue;
+		Server_ChangeGravity(JumpCurveValue);
 	}
 }
 
@@ -176,6 +177,6 @@ void URetroTestMovementComponent::ProcessCustomFalling(const float DeltaTime)
 		FallDeltaTime += DeltaTime;
 		const float FallCurveValue = FallCurve->GetFloatValue(FallDeltaTime);
 		
-		GravityScale = FallCurveValue;
+		Server_ChangeGravity(FallCurveValue);
 	}
 }

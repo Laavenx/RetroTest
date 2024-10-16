@@ -20,6 +20,8 @@ public:
 public:
 	UFUNCTION(Server, Reliable)
 	void Server_AddImpulse(FVector Vector);
+	UFUNCTION(Server, Reliable)
+	void Server_ChangeGravity(float NewGravity);
 
 protected:
 	virtual void BeginPlay() override;
