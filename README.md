@@ -10,7 +10,7 @@ Movement - WASD spacebar
 
 ## List of Features
 | Name        | Description           |
-| ------------- |:-------------:|
+|:-------------:|:-------------:|
 | User Interface      | Cooldown for main ability and health bar |
 | Enemy AI      | Basic AI which performs GAS ability with montage for attack      |
 | Moving Platforms | Custom platforms replicated using Blueprint graphs      |
