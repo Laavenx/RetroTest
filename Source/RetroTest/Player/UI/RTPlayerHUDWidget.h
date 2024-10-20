@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetCurrentHealth(float CurrentHealth);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetCurrentCoins(float CurrentCoins);
+
 	UFUNCTION()
 	void OnGameplayEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle);
 
@@ -39,4 +42,5 @@ protected:
 	TObjectPtr<URetroTestAbilitySystemComponent> AbilityComponent;
 
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
+	virtual void CoinsChanged(const FOnAttributeChangeData& Data);
 };

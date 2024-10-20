@@ -3,7 +3,6 @@
 #pragma once
 
 #include "AbilitySystemComponent.h"
-#include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "RetroTestAttributeSetBase.generated.h"
 

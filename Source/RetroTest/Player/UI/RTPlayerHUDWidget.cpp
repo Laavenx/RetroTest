@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
-#include "RetroTest/GAS/RetroTestAttributeSetBase.h"
+#include "RetroTest/GAS/Attributes/RetroTestPlayerAttributeSet.h"
 #include "RetroTest/Player/RetroTestPlayerCharacter.h"
 
 void URTPlayerHUDWidget::NativeConstruct()
@@ -17,8 +17,9 @@ void URTPlayerHUDWidget::NativeConstruct()
 	const auto PlayerCharacter = Cast<ARetroTestPlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	AbilityComponent = PlayerCharacter->FindComponentByClass<URetroTestAbilitySystemComponent>();
 	
-	const auto Attributes = PlayerCharacter->GetAttributeSet();
+	const auto Attributes = Cast<URetroTestPlayerAttributeSet>(PlayerCharacter->GetAttributeSet());
 	PlayerCharacter->GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).AddUObject(this, &URTPlayerHUDWidget::HealthChanged);
+	PlayerCharacter->GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(Attributes->GetCoinsAttribute()).AddUObject(this, &URTPlayerHUDWidget::CoinsChanged);
 
 	AbilityComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &URTPlayerHUDWidget::OnGameplayEffectAdded);
 	AbilityComponent->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag(FName(TEXT("Ability.SmashCooldown"))), EGameplayTagEventType::NewOrRemoved)
@@ -71,9 +72,12 @@ void URTPlayerHUDWidget::HealthChanged(const FOnAttributeChangeData& Data)
 	SetCurrentHealth(Data.NewValue);
 }
 
+void URTPlayerHUDWidget::CoinsChanged(const FOnAttributeChangeData& Data)
+{
+	SetCurrentCoins(Data.NewValue);
+}
+
 void URTPlayerHUDWidget::OnGameplayTagChanged(FGameplayTag InCooldownTag, int32 Count)
 {
-	if (InCooldownTag == FGameplayTag::RequestGameplayTag(FName(TEXT("Ability.SmashCooldown"))))
-	{
-	}
+	//
 }

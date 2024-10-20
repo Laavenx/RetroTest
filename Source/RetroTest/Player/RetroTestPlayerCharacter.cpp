@@ -14,14 +14,16 @@
 #include "InputActionValue.h"
 #include "RetroTestPlayerController.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
-#include "Components/SphereComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "RetroTest/GAS/Attributes/RetroTestPlayerAttributeSet.h"
 #include "RetroTest/Player/Components/RetroTestMovementComponent.h"
+#include "RetroTest/World/BlobShadowComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 ARetroTestPlayerCharacter::ARetroTestPlayerCharacter(const FObjectInitializer& object_initializer)
-	: Super(object_initializer.SetDefaultSubobjectClass<URetroTestMovementComponent>(ACharacter::CharacterMovementComponentName))
+	: Super(object_initializer.SetDefaultSubobjectClass<URetroTestMovementComponent>(CharacterMovementComponentName)
+	.SetDefaultSubobjectClass<URetroTestPlayerAttributeSet>("AttributeSet"))
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	
@@ -38,9 +40,6 @@ ARetroTestPlayerCharacter::ARetroTestPlayerCharacter(const FObjectInitializer& o
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
-	BlobShadow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlobShadow"));
-	BlobShadow->SetupAttachment(RootComponent);
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -50,6 +49,9 @@ ARetroTestPlayerCharacter::ARetroTestPlayerCharacter(const FObjectInitializer& o
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false;
+
+	BlobShadowComponent = CreateDefaultSubobject<UBlobShadowComponent>(TEXT("BlobShadowComponent"));
+	BlobShadowComponent->SetupAttachment(RootComponent);
 }
 
 // Server
@@ -94,33 +96,33 @@ void ARetroTestPlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	FHitResult TraceOutHit;
-
-	FCollisionQueryParams CollisionParameters = FCollisionQueryParams::DefaultQueryParam;
-	CollisionParameters.AddIgnoredActor(this);
-	
-	FCollisionObjectQueryParams ObjectsToHit;
-	ObjectsToHit.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectsToHit.AddObjectTypesToQuery(ECC_WorldDynamic);
-	
-	bool bIsBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceOutHit, GetActorLocation(),
-		GetActorLocation() - FVector(0,0,BlobDrawDistance), ObjectsToHit, CollisionParameters);
-
-	// controls blob shadow
-	if (bIsBlockingHit)
-	{
-		BlobShadow->SetWorldLocation(TraceOutHit.Location);
-		BlobShadow->SetVisibility(true);
-		UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(BlobMaterialInstance);
-		double Distance = FVector::Dist(GetActorLocation(), TraceOutHit.Location);
-		float Alpha = Distance / 500;
-		float ActorDistanceFromGround = UKismetMathLibrary::Lerp(50, 35,Alpha);
-		Instance->SetScalarParameterValue(FName("ModifyRadius"), ActorDistanceFromGround);
-	}
-	else
-	{
-		BlobShadow->SetVisibility(false);
-	}
+	// FHitResult TraceOutHit;
+	//
+	// FCollisionQueryParams CollisionParameters = FCollisionQueryParams::DefaultQueryParam;
+	// CollisionParameters.AddIgnoredActor(this);
+	//
+	// FCollisionObjectQueryParams ObjectsToHit;
+	// ObjectsToHit.AddObjectTypesToQuery(ECC_WorldStatic);
+	// ObjectsToHit.AddObjectTypesToQuery(ECC_WorldDynamic);
+	//
+	// bool bIsBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceOutHit, GetActorLocation(),
+	// 	GetActorLocation() - FVector(0,0,BlobDrawDistance), ObjectsToHit, CollisionParameters);
+	//
+	// // controls blob shadow
+	// if (bIsBlockingHit)
+	// {
+	// 	BlobShadow->SetWorldLocation(TraceOutHit.Location);
+	// 	BlobShadow->SetVisibility(true);
+	// 	UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(BlobMaterialInstance);
+	// 	double Distance = FVector::Dist(GetActorLocation(), TraceOutHit.Location);
+	// 	float Alpha = Distance / BlobShrinkStartDistance;
+	// 	float ActorDistanceFromGround = UKismetMathLibrary::Lerp(BlobMaxRadius, BlobMinRadius,Alpha);
+	// 	Instance->SetScalarParameterValue(FName("ModifyRadius"), ActorDistanceFromGround);
+	// }
+	// else
+	// {
+	// 	BlobShadow->SetVisibility(false);
+	// }
 }
 
 void ARetroTestPlayerCharacter::OnWalkingOffLedge_Implementation(const FVector& PreviousFloorImpactNormal,

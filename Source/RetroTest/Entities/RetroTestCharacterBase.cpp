@@ -4,7 +4,7 @@
 #include "RetroTestCharacterBase.h"
 
 #include "RetroTest/GAS/RetroTestAbilitySystemComponent.h"
-#include "RetroTest/GAS/RetroTestAttributeSetBase.h"
+#include "RetroTest/GAS/Attributes/RetroTestAttributeSetBase.h"
 
 ARetroTestCharacterBase::ARetroTestCharacterBase(const FObjectInitializer& object_initializer)
 {
