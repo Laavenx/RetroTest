@@ -15,6 +15,7 @@ Movement - WASD spacebar
 | Enemy AI      | Basic AI which performs GAS ability with montage for attack      |
 | Moving Platforms | Custom platforms replicated using Blueprint graphs      |
 | Custom Movement | Custom movement which uses timelines, changing the player gravity and replicating it      |
+| Interactable Objects | Coins, lava floor |
 
 ### ToDo:
 * Make more variations / more advanced AI
