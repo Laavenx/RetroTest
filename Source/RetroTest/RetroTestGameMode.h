@@ -14,10 +14,16 @@ class ARetroTestGameMode : public AGameModeBase
 public:
 	ARetroTestGameMode();
 
+	void PlayerDied(AController* Controller);
+	
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
 private:
+	UPROPERTY()
 	TArray<APlayerController*> ConnectedControllers;
+
+	void RespawnPlayer(AController* Controller);
+	float RespawnDelay = 2;
 };
 
 

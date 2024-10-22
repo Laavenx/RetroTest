@@ -49,8 +49,8 @@ void URetroTestAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffect
 
 			if (NewHealth <= 0)
 			{
-				AActor* TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-				TargetActor->Destroy();
+				const auto TargetActor = Cast<ARetroTestCharacterBase>(Data.Target.AbilityActorInfo->AvatarActor.Get());
+				TargetActor->Die();
 			}
 		}
 	}

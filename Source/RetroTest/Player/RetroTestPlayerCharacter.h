@@ -6,6 +6,7 @@
 #include "GameplayAbilitySpecHandle.h"
 #include "Logging/LogMacros.h"
 #include "RetroTest/Entities/RetroTestCharacterBase.h"
+#include "RetroTest/Player/Components/RetroTestMovementComponent.h"
 #include "RetroTestPlayerCharacter.generated.h"
 
 class USphereComponent;
@@ -27,11 +28,18 @@ public:
 	ARetroTestPlayerCharacter(const FObjectInitializer& object_initializer);
 
 	virtual void PossessedBy(AController* NewController) override;
+	FORCEINLINE URetroTestMovementComponent* GetRetroTestCharacterMovement() const { return Cast<URetroTestMovementComponent>(GetCharacterMovement()); }
+
+public:
+	virtual void Die() override;
 
 private:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
+
+	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
+		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 	
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -42,21 +50,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBlobShadowComponent> BlobShadowComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	float BlobDrawDistance = 2500;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	float BlobShrinkStartDistance = 500;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	float BlobMaxRadius = 50;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	float BlobMinRadius = 35;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMaterialParameterCollection> BlobMaterialInstance;
 
 protected:
 	void Move(const FInputActionValue& Value);

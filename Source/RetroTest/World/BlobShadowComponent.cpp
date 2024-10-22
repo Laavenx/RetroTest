@@ -42,7 +42,7 @@ void UBlobShadowComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(BlobMaterialInstance);
 		const double Distance = FVector::Dist(OwnerLocation, TraceOutHit.Location);
 		const float Alpha = Distance / BlobShrinkStartDistance;
-		float ActorDistanceFromGround = UKismetMathLibrary::Lerp(BlobMaxRadius, BlobMinRadius,Alpha);
+		const float ActorDistanceFromGround = UKismetMathLibrary::Lerp(BlobMaxRadius, BlobMinRadius,Alpha);
 		Instance->SetScalarParameterValue(FName("ModifyRadius"), ActorDistanceFromGround);
 	}
 	else

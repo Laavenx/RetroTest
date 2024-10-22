@@ -3,6 +3,8 @@
 
 #include "InteractableFloorBase.h"
 #include "..\..\Player\RetroTestPlayerCharacter.h"
+#include "RetroTest/GAS/RetroTestAbilitySystemComponent.h"
+#include "RetroTest/GAS/Attributes/RetroTestPlayerAttributeSet.h"
 
 
 AInteractableFloorBase::AInteractableFloorBase()
@@ -30,14 +32,18 @@ void AInteractableFloorBase::TouchedMesh(AActor* Actor)
 {
 	if (auto Player = Cast<ARetroTestPlayerCharacter>(Actor))
 	{
-		FVector3d LocationToUse = Player->CurrentSpawnLocation;
-		//Player->Destroy();
+		URetroTestAbilitySystemComponent* OwnerAbilitySystem = Player->GetAbilitySystemComponent();
+		FGameplayEffectContextHandle Context = OwnerAbilitySystem->MakeEffectContext();
+		FGameplayEffectSpecHandle SpecHandle = OwnerAbilitySystem->MakeOutgoingSpec(AbilityEffect, 1, Context);
 
-		Player->SetActorLocation(Player->CurrentSpawnLocation);
-		// FActorSpawnParameters SpawnInfo;
-		// FRotator Rotation(0.0f, 0.0f, 0.0f);
-		// auto SpawnedActor = GetWorld()->SpawnActor<ARetroTestPlayerCharacter>(LocationToUse, Rotation, SpawnInfo);
-		// GetWorld()->GetFirstPlayerController()->Possess(SpawnedActor);
+		if (!IsValid(OwnerAbilitySystem))
+			return;
+		
+		OwnerAbilitySystem->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		// if (auto AttribSet = Cast<URetroTestPlayerAttributeSet>(Player->GetAttributeSet()))
+		// {
+		// 	AttribSet->SetDamage(99);
+		// }
 	}
 }
 

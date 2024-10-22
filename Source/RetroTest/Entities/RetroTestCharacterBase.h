@@ -17,8 +17,9 @@ class RETROTEST_API ARetroTestCharacterBase : public ACharacter
 public:
 	ARetroTestCharacterBase(const FObjectInitializer& object_initializer);
 
-protected:
+public:
 	virtual void BeginPlay() override;
+	virtual void Die();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS - Attributes")

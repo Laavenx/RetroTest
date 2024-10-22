@@ -33,7 +33,7 @@ private:
 	float BlobMinRadius = 35;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	UMaterialParameterCollection* BlobMaterialInstance;
+	TObjectPtr<UMaterialParameterCollection> BlobMaterialInstance;
 	
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,

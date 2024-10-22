@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "InteractableFloorBase.generated.h"
 
+class UGameplayEffect;
 class ARetroTestPlayerCharacter;
 
 UCLASS()
@@ -17,6 +18,9 @@ public:
 	AInteractableFloorBase();
 
 	virtual void TouchedMesh(AActor* Player);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> AbilityEffect;
 
 protected:
 	virtual void BeginPlay() override;

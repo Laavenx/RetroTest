@@ -62,18 +62,20 @@ void URetroTestMovementComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	
 	if (bIsBlockingHit)
 	{
+		// Detect touching lava floors and similar
 		if (auto Floor = Cast<AInteractableFloorBase>(TraceOutHit.GetActor()))
 		{
 			Floor->TouchedMesh(GetOwner());
 		}
-		// Try to bounce off
-		DrawDebugSphere(GetWorld(), TraceOutHit.ImpactPoint, 5.f, 16, FColor::Orange, false, 1.5, 0, 1.f);
-		const FVector LaunchVector = FMath::GetReflectionVector(Velocity, TraceOutHit.ImpactNormal);
-		if (bIsJumping)
-		{
-			auto ZClamp = FMath::Clamp(LaunchVector.Z, -9000.0, 9000.0);
-			Launch(FVector(LaunchVector.X, LaunchVector.Y, LaunchVector.Z) * 1.25);
-		}
+		
+		// Experimental code for making the slime be able to bounce off of walls
+		// DrawDebugSphere(GetWorld(), TraceOutHit.ImpactPoint, 5.f, 16, FColor::Orange, false, 1.5, 0, 1.f);
+		// const FVector LaunchVector = FMath::GetReflectionVector(Velocity, TraceOutHit.ImpactNormal);
+		// if (bIsJumping)
+		// {
+		// 	auto ZClamp = FMath::Clamp(LaunchVector.Z, -9000.0, 9000.0);
+		// 	Launch(FVector(LaunchVector.X, LaunchVector.Y, LaunchVector.Z) * 1.25);
+		// }
 	}
 	
 	// fixes being pushed by other objects

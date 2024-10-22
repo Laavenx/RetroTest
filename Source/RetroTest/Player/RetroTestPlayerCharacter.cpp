@@ -13,11 +13,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "RetroTestPlayerController.h"
-#include "Materials/MaterialParameterCollectionInstance.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "RetroTest/RetroTestGameMode.h"
 #include "RetroTest/GAS/Attributes/RetroTestPlayerAttributeSet.h"
 #include "RetroTest/Player/Components/RetroTestMovementComponent.h"
 #include "RetroTest/World/BlobShadowComponent.h"
+#include "RetroTest/World/Interactable/PhysicsInteractable.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -25,8 +25,6 @@ ARetroTestPlayerCharacter::ARetroTestPlayerCharacter(const FObjectInitializer& o
 	: Super(object_initializer.SetDefaultSubobjectClass<URetroTestMovementComponent>(CharacterMovementComponentName)
 	.SetDefaultSubobjectClass<URetroTestPlayerAttributeSet>("AttributeSet"))
 {
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -81,10 +79,9 @@ void ARetroTestPlayerCharacter::BeginPlay()
 		}
 	}
 
-	// Has to be done on server
+	// Register ability on the server
 	if (HasAuthority())
 	{
-		// Register ability
 		if (SmashAbility && AbilitySystemComp)
 		{
 			SmashAbilityHandle = AbilitySystemComp->GiveAbility(SmashAbility);
@@ -95,6 +92,35 @@ void ARetroTestPlayerCharacter::BeginPlay()
 void ARetroTestPlayerCharacter::Destroyed()
 {
 	Super::Destroyed();
+}
+
+void ARetroTestPlayerCharacter::Die()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
+
+	if (IsValid(AbilitySystemComp))
+	{
+		AbilitySystemComp->CancelAllAbilities();
+	}
+
+	// if (DeathMontage)
+	// {
+	// 	PlayAnimMontage(DeathMontage);
+	// }
+
+	if (HasAuthority())
+	{
+		ARetroTestGameMode* GM = Cast<ARetroTestGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (GM)
+		{
+			GM->PlayerDied(GetController());
+		}
+	}
+	
+	Destroy();
 }
 
 void ARetroTestPlayerCharacter::Tick(float DeltaSeconds)
@@ -185,6 +211,19 @@ void ARetroTestPlayerCharacter::CheckJumpInput(float DeltaTime)
 
 			bWasJumping = bDidJump;
 		}
+	}
+}
+
+void ARetroTestPlayerCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp,
+	bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if (auto Interactable = Cast<APhysicsInteractable>(Other))
+	{
+		//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (Hit.ImpactNormal* 100), FColor::Red, false, 1.5);
+		//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (HitNormal * 100), FColor::Green, false, 1.5);
+		//DrawDebugLine(GetWorld(), GetActorLocation(), Hit., FColor::Green, false, 1.5);
 	}
 }
 

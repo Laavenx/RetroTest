@@ -31,3 +31,9 @@ void ARetroTestCharacterBase::BeginPlay()
 	}
 }
 
+void ARetroTestCharacterBase::Die()
+{
+	// Play death montage in the future
+	Destroy();
+}
+

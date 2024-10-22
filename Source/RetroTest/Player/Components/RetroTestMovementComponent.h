@@ -18,9 +18,10 @@ public:
 	URetroTestMovementComponent();
 
 public:
-	UFUNCTION(Server, Reliable)
+	// executes on client and server at the same time, which should result in more accurate results
+	UFUNCTION(NetMulticast, Reliable)
 	void Server_AddImpulse(FVector Vector);
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(NetMulticast, Unreliable)
 	void Server_ChangeGravity(float NewGravity);
 
 protected:
