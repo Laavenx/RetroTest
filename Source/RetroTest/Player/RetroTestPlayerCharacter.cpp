@@ -60,7 +60,7 @@ void ARetroTestPlayerCharacter::PossessedBy(AController* NewController)
 	ARetroTestPlayerController* PlayerController = Cast<ARetroTestPlayerController>(Controller);
 	if (PlayerController)
 	{
-		PlayerController->CreateHUD();
+		PlayerController->CreateHUD(this);
 	}
 }
 
@@ -235,7 +235,7 @@ void ARetroTestPlayerCharacter::OnRep_PlayerState()
 	ARetroTestPlayerController* PlayerController = Cast<ARetroTestPlayerController>(Controller);
 	if (PlayerController)
 	{
-		PlayerController->CreateHUD();
+		PlayerController->CreateHUD(this);
 	}
 }
 

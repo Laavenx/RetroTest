@@ -1,19 +1,20 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "RetroTestGameMode.h"
+
+#include "Player/RetroTestPlayerController.h"
 #include "Player\RetroTestPlayerCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARetroTestGameMode::ARetroTestGameMode()
 {
-	//
 }
 
 void ARetroTestGameMode::PlayerDied(AController* Controller)
 {
 	FTimerHandle RespawnTimerHandle;
 	FTimerDelegate RespawnDelegate;
-
+	
 	RespawnDelegate = FTimerDelegate::CreateUObject(this, &ARetroTestGameMode::RespawnPlayer, Controller);
 	GetWorldTimerManager().SetTimer(RespawnTimerHandle, RespawnDelegate, RespawnDelay, false);
 }

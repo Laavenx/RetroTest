@@ -4,6 +4,7 @@
 #include "RetroTestPlayerController.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "UI/RTPlayerHUDWidget.h"
 
 ARetroTestPlayerController::ARetroTestPlayerController()
@@ -14,7 +15,6 @@ ARetroTestPlayerController::ARetroTestPlayerController()
 void ARetroTestPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ARetroTestPlayerController::Tick(float DeltaTime)
@@ -22,10 +22,16 @@ void ARetroTestPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ARetroTestPlayerController::CreateHUD()
+void ARetroTestPlayerController::CreateHUD(ACharacter* PossesedChar)
 {
 	if (UIMainHUD)
 	{
+		if (!IsLocalPlayerController())
+		{
+			return;
+		}
+		UIMainHUD->InitializeAbilityWidget(PossesedChar);
+		UIMainHUD->SetVisibility(ESlateVisibility::Visible);
 		return;
 	}
 	
@@ -42,6 +48,7 @@ void ARetroTestPlayerController::CreateHUD()
 	}
 	
 	UIMainHUD = CreateWidget<URTPlayerHUDWidget>(this, MainHUDClass);
+	UIMainHUD->InitializeAbilityWidget(PossesedChar);
 	UIMainHUD->AddToViewport();
 }
 
@@ -50,9 +57,19 @@ void ARetroTestPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 }
 
+void ARetroTestPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+	
+	if (IsValid(UIMainHUD))
+	{
+		UIMainHUD->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void ARetroTestPlayerController::OnRep_PlayerState()
 {
 	// For edge cases where the PlayerState is repped before the Hero is possessed.
 	Super::OnRep_PlayerState();
-	CreateHUD();
+	CreateHUD(GetCharacter());
 }

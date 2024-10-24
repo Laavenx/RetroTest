@@ -21,6 +21,7 @@ class RETROTEST_API URTPlayerHUDWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	void InitializeAbilityWidget(ACharacter* Character);
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetCurrentHealth(float CurrentHealth);
@@ -39,7 +40,7 @@ protected:
 
 	FTimerHandle TimerHandle;
 
-	TObjectPtr<URetroTestAbilitySystemComponent> AbilityComponent;
+	TWeakObjectPtr<URetroTestAbilitySystemComponent> AbilityComponent;
 
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void CoinsChanged(const FOnAttributeChangeData& Data);

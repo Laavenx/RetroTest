@@ -13,11 +13,19 @@
 void URTPlayerHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+}
+
+void URTPlayerHUDWidget::InitializeAbilityWidget(ACharacter* Character)
+{;
+	const auto PlayerCharacter = Cast<ARetroTestPlayerCharacter>(Character);
+	if (!IsValid(Character)) { return; }
 	
-	const auto PlayerCharacter = Cast<ARetroTestPlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	AbilityComponent = PlayerCharacter->FindComponentByClass<URetroTestAbilitySystemComponent>();
 	
 	const auto Attributes = Cast<URetroTestPlayerAttributeSet>(PlayerCharacter->GetAttributeSet());
+	SetCurrentHealth(Attributes->GetHealth());
+	SetCurrentCoins(0);
+		
 	PlayerCharacter->GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).AddUObject(this, &URTPlayerHUDWidget::HealthChanged);
 	PlayerCharacter->GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(Attributes->GetCoinsAttribute()).AddUObject(this, &URTPlayerHUDWidget::CoinsChanged);
 
@@ -68,7 +76,6 @@ void URTPlayerHUDWidget::OnGameplayEffectAdded(UAbilitySystemComponent* ASC, con
 
 void URTPlayerHUDWidget::HealthChanged(const FOnAttributeChangeData& Data)
 {
-	// Update health bar
 	SetCurrentHealth(Data.NewValue);
 }
 
