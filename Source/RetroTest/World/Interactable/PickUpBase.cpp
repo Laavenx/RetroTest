@@ -12,12 +12,10 @@ APickUpBase::APickUpBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	CoinMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CoinMesh"));
-	SetRootComponent(CoinMesh);
-	//FloorMesh->SetCastShadow(false);
-	CoinMesh->SetComponentTickEnabled(false);
-	CoinMesh->SetGenerateOverlapEvents(false);
-	//CoinMesh->SetupAttachment(RootComponent);
+	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupPickupMesh"));
+	SetRootComponent(PickupMesh);
+	PickupMesh->SetComponentTickEnabled(false);
+	PickupMesh->SetGenerateOverlapEvents(false);
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
 	SphereCollision->SetupAttachment(RootComponent);

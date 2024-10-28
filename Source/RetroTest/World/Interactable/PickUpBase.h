@@ -29,7 +29,7 @@ private:
 	TObjectPtr<USoundBase> Sound;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStaticMeshComponent> CoinMesh;
+	TObjectPtr<UStaticMeshComponent> PickupMesh;
 
 	UFUNCTION()
 	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,

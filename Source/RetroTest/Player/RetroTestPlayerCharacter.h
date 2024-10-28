@@ -92,6 +92,7 @@ private:
 	virtual void CheckJumpInput(float DeltaTime) override;
 
 	FTimerHandle JumpTimerHandle;
+	// Indicated whether character auto-jumps if jump button was pressed, JumpPredictionTime seconds before landing
 	bool bShouldPredictJump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true", ClampMin = "0.0"))

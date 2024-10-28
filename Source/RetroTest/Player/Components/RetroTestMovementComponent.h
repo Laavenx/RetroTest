@@ -6,9 +6,19 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "RetroTestMovementComponent.generated.h"
 
-
 class ARetroTestPlayerCharacter;
 
+USTRUCT(BlueprintType)
+struct FVectorMagnitudeAngle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Magnitude;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "90"))
+	float Angle;
+};
+	
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class RETROTEST_API URetroTestMovementComponent : public UCharacterMovementComponent
 {
@@ -73,4 +83,9 @@ public:
 
 private:
 	TWeakObjectPtr<ARetroTestPlayerCharacter> RetroCharacter;
+
+	// Consecutive Jumps
+	int ConsecutiveJumpCounter = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = ( AllowPrivateAccess = "true"))
+	TArray<FVectorMagnitudeAngle> ConsecutiveJumpsArray;
 };

@@ -16,7 +16,7 @@
 #include "RetroTest/RetroTestGameMode.h"
 #include "RetroTest/GAS/Attributes/RetroTestPlayerAttributeSet.h"
 #include "RetroTest/Player/Components/RetroTestMovementComponent.h"
-#include "RetroTest/World/BlobShadowComponent.h"
+#include "RetroTest/Entities/Components/BlobShadowComponent.h"
 #include "RetroTest/World/Interactable/PhysicsInteractable.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);

@@ -6,6 +6,7 @@
 #include "..\RetroTestPlayerCharacter.h"
 #include "GameFramework/Character.h"
 #include "Components/capsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "RetroTest/World/Interactable/InteractableFloorBase.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
@@ -115,9 +116,11 @@ void URetroTestMovementComponent::OnMovementModeChanged(EMovementMode PreviousMo
 
 		if (RetroCharacter.IsValid() && RetroCharacter->GetShouldPredictJump())
 		{
+			ConsecutiveJumpCounter += 1;
 			DoJump(RetroCharacter->bClientUpdating);
 			RetroCharacter->SetShouldPredictJump(false);
 		}
+		else { ConsecutiveJumpCounter = 0; }
 
 		UE_LOG(LogTemp, Warning, TEXT("Walking"));
 	}
@@ -146,10 +149,15 @@ bool URetroTestMovementComponent::DoJump(bool bReplayingMoves)
 		bIsFalling = false;
 		
 		Server_ChangeGravity(2);
-		
-		// Increase forward jump length
-		const auto ForwardVector = FVector(Velocity.X, Velocity.Y, 0.0) * JumpForwardVelocityImpulseMult;
-		Server_AddImpulse(ForwardVector);
+
+		FVector2D VelocityAlongXY = FVector2D(Velocity.X, Velocity.Y);
+		if (ConsecutiveJumpsArray.IsValidIndex(ConsecutiveJumpCounter) && VelocityAlongXY.Size() > 5)
+		{
+			const auto VectorData = ConsecutiveJumpsArray[ConsecutiveJumpCounter];
+			// Increase forward jump length
+			const auto Impulse = UKismetMathLibrary::RotateAngleAxis(RetroCharacter->GetActorForwardVector(), VectorData.Angle, FVector(0, -1,0));
+			Server_AddImpulse(Impulse * VectorData.Magnitude);
+		}
 		return true;
 	}
 
