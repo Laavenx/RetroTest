@@ -13,8 +13,7 @@
 URetroTestMovementComponent::URetroTestMovementComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// TODO: probably need a custom function
+	
 	bUseFlatBaseForFloorChecks = true;
 }
 
@@ -153,6 +152,7 @@ bool URetroTestMovementComponent::DoJump(bool bReplayingMoves)
 		FVector2D VelocityAlongXY = FVector2D(Velocity.X, Velocity.Y);
 		if (ConsecutiveJumpsArray.IsValidIndex(ConsecutiveJumpCounter) && VelocityAlongXY.Size() > 5)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("ConsecutiveJumpCounter %d"), ConsecutiveJumpCounter);
 			const auto VectorData = ConsecutiveJumpsArray[ConsecutiveJumpCounter];
 			// Increase forward jump length
 			const auto Impulse = UKismetMathLibrary::RotateAngleAxis(RetroCharacter->GetActorForwardVector(), VectorData.Angle, FVector(0, -1,0));
