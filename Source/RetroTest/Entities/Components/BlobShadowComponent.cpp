@@ -13,6 +13,12 @@ UBlobShadowComponent::UBlobShadowComponent()
 void UBlobShadowComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (BlobMaterial)
+	{
+		BlobMaterialInstance = UMaterialInstanceDynamic::Create(BlobMaterial, this);
+		SetMaterial(0, BlobMaterialInstance);
+	}
 }
 
 void UBlobShadowComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -39,11 +45,10 @@ void UBlobShadowComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		this->SetWorldLocation(TraceOutHit.Location);
 		this->SetVisibility(true);
-		UMaterialParameterCollectionInstance* Instance = GetWorld()->GetParameterCollectionInstance(BlobMaterialInstance);
 		const double Distance = FVector::Dist(OwnerLocation, TraceOutHit.Location);
 		const float Alpha = Distance / BlobShrinkStartDistance;
 		const float ActorDistanceFromGround = UKismetMathLibrary::Lerp(BlobMaxRadius, BlobMinRadius,Alpha);
-		Instance->SetScalarParameterValue(FName("ModifyRadius"), ActorDistanceFromGround);
+		BlobMaterialInstance->SetScalarParameterValue(FName("Radius"), ActorDistanceFromGround);
 	}
 	else
 	{

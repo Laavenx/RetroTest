@@ -20,6 +20,12 @@ public:
 private:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterial> BlobMaterial;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> BlobMaterialInstance;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
 	float BlobDrawDistance = 2500;
 
@@ -31,9 +37,6 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
 	float BlobMinRadius = 35;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shadow, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMaterialParameterCollection> BlobMaterialInstance;
 	
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
