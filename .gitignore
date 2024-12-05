@@ -74,3 +74,5 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 Plugins/Developer/*
+.idea
+RetroTest.uproject.DotSettings.user

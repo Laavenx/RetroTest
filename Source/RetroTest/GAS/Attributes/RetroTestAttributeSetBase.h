@@ -44,5 +44,5 @@ protected:
 	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	
 	UFUNCTION()
-	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldHealth);
+	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
 };
